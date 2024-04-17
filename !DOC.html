@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piggy Bank Widget</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 300px;
+      text-align: center;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .piggy-bank {
+      width: 120px;
+      height: 90px;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+      position: relative;
+      margin: 10px auto;
+    }
+
+    .coin-slot {
+      width: 30px;
+      height: 12px;
+      background-color: #ccc;
+      position: absolute;
+      top: 6px;
+      left: 45px;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .fill {
+      width: 100%;
+      height: 0;
+      background-color: #ffcc00;
+      position: absolute;
+      bottom: 0;
+      border-radius: 0 0 8px 8px;
+      transition: height 0.5s;
+    }
+
+    .amount-container {
+      margin-bottom: 10px;
+    }
+
+    .amount-container label {
+      font-weight: bold;
+    }
+
+    .amount-container input {
+      padding: 5px;
+      width: 100px;
+    }
+
+    .current-amount {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background-color: #228B22; /* Forest Green */
+      color: white;
+      border: none;
+    }
+
+    .add-btn:hover {
+      background-color: #186C16; /* Darker Forest Green */
+    }
+
+    .withdraw-btn {
+      background-color: #FF8C00; /* Dark Orange */
+      color: white;
+      border: none;
+    }
+
+    .withdraw-btn:hover {
+      background-color: #D98C00; /* Darker Orange */
+    }
+
+    h1 {
+      font-size: 20px; /* Half the size */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Piggy Bank</h1>
+    <div class="piggy-bank">
+      <div class="coin-slot"></div>
+      <div class="fill" id="fill"></div>
+    </div>
+    <div class="amount-container">
+      <label for="amount"></label>
+      <input type="number" id="amount" placeholder="Enter amount">
+    </div>
+    <div class="btn-container">
+      <button class="add-btn" onclick="addAmount()">Add</button>
+      <button class="withdraw-btn" onclick="withdrawAmount()">Withdraw</button>
+    </div>
+    <div class="current-amount" id="currentAmount">
+      Current Amount: $<span id="displayAmount">0</span>
+    </div>
+  </div>
+
+  <script>
+    function addAmount() {
+      const amountInput = document.getElementById("amount");
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+      }
+
+      updatePiggyBank(amount);
+      amountInput.value = "";
+    }
+
+    function withdrawAmount() {
+      const amountInput = document.getElementById("amount");
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+      }
+
+      // Current balance
+      const displayAmount = document.getElementById("displayAmount");
+      const currentBalance = parseFloat(displayAmount.textContent);
+
+      if (amount > currentBalance) {
+        alert("Cannot withdraw more than the current balance.");
+        return;
+      }
+
+      updatePiggyBank(-amount);
+      amountInput.value = "";
+    }
+
+    function updatePiggyBank(amount) {
+      const fill = document.getElementById("fill");
+      const displayAmount = document.getElementById("displayAmount");
+
+      // Calculate new height based on amount
+      const currentHeight = parseFloat(window.getComputedStyle(fill).height);
+      const maxHeight = 90; // Max height of piggy bank
+      let newHeight = currentHeight + (amount / 100) * maxHeight;
+
+      // Cap the height at max height and 0 (for withdrawal)
+      newHeight = Math.max(0, Math.min(newHeight, maxHeight));
+
+      // Update fill height and display amount
+      fill.style.height = newHeight + "px";
+      displayAmount.textContent = parseFloat(displayAmount.textContent) + amount;
+    }
+  </script>
+</body>
+</html>
